@@ -1,18 +1,21 @@
 # OracleのSequence相当の機能を実装するサンプル
 
 連番を生成する関数（$Increment）を使用して連番を自動生成する
+
 ## ファイル一覧
-・SampleSequencer.xml	実行に必要なクラス、ルーチンを含むプロジェクトファイル。
-・readme.md		このファイル
+- SampleSequencer.xml	実行に必要なクラス、ルーチンを含むプロジェクトファイル。
+- readme.md		このファイル
 
 ## セットアップ
 
-###プロジェクトファイルのインポート
+### プロジェクトファイルのインポート
+
 スタジオで適当なネームスペースにSampleSequencer.xmlをインポート・コンパイルします。
 
 ## サンプルの実行
 
 ###　実行内容
+
 Init()メソッドで初期化を実行し、SQLのSelect文でNextValue及びCurrValueを選択します。
 
 ## ターミナルでの実行例
