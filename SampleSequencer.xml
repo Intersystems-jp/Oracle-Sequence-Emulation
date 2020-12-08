@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2013.1.2 (Build 601U)" ts="2013-12-26 15:08:14">
+<Class name="Sample.Sequencer">
+<ClassType>persistent</ClassType>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Persistent</Super>
+<TimeChanged>63182,44564.369189</TimeChanged>
+<TimeCreated>63169,63089</TimeCreated>
+
+<Property name="NextValue">
+<Type>%Library.Integer</Type>
+<Calculated>1</Calculated>
+<SqlComputeCode> s {NextValue}=##class({%%CLASSNAME}).NextVal()</SqlComputeCode>
+<SqlComputed>1</SqlComputed>
+</Property>
+
+<Property name="CurrValue">
+<Type>%Library.Integer</Type>
+<Calculated>1</Calculated>
+<SqlComputeCode> s {CurrValue}=##class({%%CLASSNAME}).CurrVal()</SqlComputeCode>
+<SqlComputed>1</SqlComputed>
+</Property>
+
+<Parameter name="SequencerGlobal">
+<Default>^Sample.SequencerDSeqgbl</Default>
+</Parameter>
+
+<Parameter name="MAXVALUE">
+<Default>100000000000000</Default>
+</Parameter>
+
+<Method name="Init">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	//init	
+	set tSC=$CLASSMETHOD(..%ClassName(1),"%KillExtent")
+	if $$$ISERR(tSC) quit tSC
+	Set instance=$CLASSMETHOD(..%ClassName(1),"%New")
+	set tSC=instance.%Save()
+	if $$$ISERR(tSC) quit tSC
+
+	//シーケンスグローバル(クラスパラメータ)の設定
+	//クラス名からシーケンスグローバル名を決定し、それをクラスパラメータ:SequenceGlobalに設定
+	set classdef=##class(%Dictionary.ClassDefinition).%OpenId(..%ClassName(1))
+	set dataloc=classdef.Storages.GetAt(1).DataLocation
+	set sequenceglobal=dataloc_"Seqgbl"
+	set classdef.Parameters.GetAt(2).Default=sequenceglobal
+	set tSC=classdef.%Save()
+	if $$$ISERR(tSC) quit tSC
+	set tSC=$SYSTEM.OBJ.Compile(..%ClassName(1),"ck")
+	if $$$ISERR(tSC) quit tSC
+
+	Kill @sequenceglobal
+	
+	quit tSC
+]]></Implementation>
+</Method>
+
+<Method name="NextVal">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%Library.Integer</ReturnType>
+<SqlProc>1</SqlProc>
+<Implementation><![CDATA[$Select($G(@(..#SequencerGlobal))<..#MAXVALUE:$increment(@(..#SequencerGlobal)),1:-1)
+]]></Implementation>
+</Method>
+
+<Method name="NextValueGet">
+<CodeMode>expression</CodeMode>
+<ReturnType>%Library.Integer</ReturnType>
+<Implementation><![CDATA[..NextVal()
+]]></Implementation>
+</Method>
+
+<Method name="CurrVal">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%Library.Integer</ReturnType>
+<SqlProc>1</SqlProc>
+<Implementation><![CDATA[$Get(@(..#SequencerGlobal))
+]]></Implementation>
+</Method>
+
+<Method name="CurrValueGet">
+<CodeMode>expression</CodeMode>
+<ReturnType>%Library.Integer</ReturnType>
+<Implementation><![CDATA[..CurrVal()
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Sample.SequencerD</DataLocation>
+<DefaultData>SequencerDefaultData</DefaultData>
+<IdLocation>^Sample.SequencerD</IdLocation>
+<IndexLocation>^Sample.SequencerI</IndexLocation>
+<StreamLocation>^Sample.SequencerS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="SequencerDefaultData">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
