@@ -4,7 +4,7 @@
 
 ## ファイル一覧
 - SampleSequencer.xml	実行に必要なクラス、ルーチンを含むプロジェクトファイル。
-- readme.md		このファイル
+- README.md		このファイル
 
 ## セットアップ
 
